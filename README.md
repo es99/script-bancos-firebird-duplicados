@@ -1,0 +1,1 @@
+Script que procura bancos .FDB duplicados ou de backup e os move para outra pasta para serem posteriormente deletados.
