@@ -1,4 +1,5 @@
 import os, sys, shutil
+from datetime import datetime
 
 sistemas_bancos = {
     'PJFolha': 'DBFOLHA',
@@ -33,10 +34,12 @@ def arquivo_morto():
 
 
 def geraRelatorio(arquivos, total):
+    dataHoraAtual = datetime.now()
     kb = total / 1024
     MB = kb / 1024
-    path = os.path.join(pathArquivoMorto, 'log.txt')
-    with open(path, 'a') as logFile:
+    dataHoraAtual_texto = dataHoraAtual.strftime("%d-%m-%Y-%H-%M-%S")
+    path = os.path.join(pathArquivoMorto, dataHoraAtual_texto + ".log")
+    with open(path, 'w') as logFile:
         for file in arquivos:
             logFile.write(file + '\n')
         logFile.write("Tamanho total dos bancos duplicados: " + str(MB) + "MB" + "\n")
@@ -53,7 +56,11 @@ def pesquisa_bancos_duplicados(diretorios):
                 if arquivo_duplicado(diretorio, filename):
                     totalSize += os.path.getsize(os.path.join(folderName, filename))
                     arquivos.append(filename)
-    geraRelatorio(arquivos=arquivos, total=totalSize)
+    if len(arquivos) == 0:
+        print("Não existem arquivos duplicados de banco de dados, encerrando")
+        sys.exit(1)
+    else:
+        geraRelatorio(arquivos=arquivos, total=totalSize)
 
 
 if len(sys.argv) != 2:
