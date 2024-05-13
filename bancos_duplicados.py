@@ -9,7 +9,8 @@ sistemas_bancos = {
     'PJFrota': 'DBFROTA',
     'PJSuporte': 'PJSUPORTE',
     'PJTomb': 'DBTOMB',
-    'PJTributos': 'DBTRIBUTOS'  
+    'PJTributos': 'DBTRIBUTOS',
+    'PJPCTB': 'DBPCTB'  
 }
 
 dbacesso = "DBACESSO"
@@ -42,6 +43,7 @@ def geraRelatorio(arquivos, total):
     with open(path, 'w') as logFile:
         for file in arquivos:
             logFile.write(file + '\n')
+            os.unlink(file)
         logFile.write("Tamanho total dos bancos duplicados: " + str(MB) + "MB" + "\n")
         logFile.write("="*30 + "fim do log" + "="*30)
     print("log gerado em: ", os.path.abspath(path))
@@ -54,8 +56,9 @@ def pesquisa_bancos_duplicados(diretorios):
         for folderName, subfolders, filenames in os.walk(path):
             for filename in filenames:
                 if arquivo_duplicado(diretorio, filename):
-                    totalSize += os.path.getsize(os.path.join(folderName, filename))
-                    arquivos.append(filename)
+                    path_arquivo = os.path.join(folderName, filename)
+                    totalSize += os.path.getsize(path_arquivo)
+                    arquivos.append(path_arquivo)
     if len(arquivos) == 0:
         print("Não existem arquivos duplicados de banco de dados, encerrando")
         sys.exit(1)
